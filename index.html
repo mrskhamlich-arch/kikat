@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>KitKat Universe</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    // API endpoint configuration
+    const API_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+      ? 'http://localhost:3000'
+      : 'https://your-deployed-server.com'; // Update with your server URL
+    
+    // Fetch data from API
+    async function fetchSiteData() {
+      try {
+        const response = await fetch(`${API_URL}/api/site-data`);
+        if (!response.ok) throw new Error('Failed to fetch');
+        return await response.json();
+      } catch (err) {
+        console.log('API fetch failed, using cache:', err);
+        return getStorage('site-data', {});
+      }
+    }
+    
+    function getStorage(key, defaultVal = {}) {
+      try {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : defaultVal;
+      } catch (e) {
+        return defaultVal;
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* page-specific tweaks */
+    .status-badge{display:inline-block;background:var(--card);color:var(--muted);padding:12px 24px;border-radius:40px;font-weight:700;box-shadow:0 20px 40px rgba(0,0,0,0.35);font-size:16px}
+    header.topbar{background:linear-gradient(90deg,var(--bg1),var(--bg2));color:#fff}
+    header.topbar .admin-link{background:rgba(255,255,255,0.08);color:#fff;border-radius:999px;padding:8px 12px}
+  </style> 
+</head>
+<body class="page">
+  <div class="bg-pattern" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:12px">
+        <strong style="color:#fff">KitKat Universe</strong>
+      </div>
+    </div>
+  </header>
+
+  <main class="center">
+    <div class="logo" id="title">KitKat<br>Universe</div>
+
+    <div class="card status-card">
+      <div class="status" style="margin-bottom:18px"><span class="status-badge">Commissions : Open</span></div>
+      <div class="social" id="social">
+        <!-- fallback icons -->
+        <a class="icon" href="#"><i class="fab fa-twitter"></i></a>
+        <a class="icon" href="#"><i class="fab fa-instagram"></i></a>
+        <a class="icon" href="#"><i class="fab fa-youtube"></i></a>
+        <a class="icon" href="#"><i class="fas fa-heart"></i></a>
+      </div>
+    </div>
+
+    <div class="card nav-card">
+      <div class="links-card" id="links">
+        <a href="#" class="link-pill"><span class="pill-icon"><i class="fab fa-instagram"></i></span>Home</a>
+        <a href="#" class="link-pill"><span class="pill-icon"><i class="fas fa-user"></i></span>About Me</a>
+        <a href="#" class="link-pill"><span class="pill-icon"><i class="fas fa-globe"></i></span>Commissions</a>
+        <a href="#" class="link-pill"><span class="pill-icon"><i class="fas fa-envelope"></i></span>Contact Me</a>
+        <a href="#" class="link-pill"><span class="pill-icon"><i class="fas fa-balance-scale"></i></span>TOS</a>
+        <a href="#" class="link-pill"><span class="pill-icon"><i class="fas fa-book-open"></i></span>Examples</a>
+        <a href="#" class="link-pill"><span class="pill-icon"><i class="fas fa-tag"></i></span>Pricing</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function el(id) {
+      return document.getElementById(id);
+    }
+
+    function getStorage(key, defaultVal = {}) {
+      try {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : defaultVal;
+      } catch (e) {
+        return defaultVal;
+      }
+    }
+
+    // Listen to Firebase for real-time updates
+    function listenToFirebase() {
+      try {
+        if (typeof firebase === 'undefined' || !firebase.database) {
+          console.log('Firebase not available');
+          return;
+        }
+        const db = firebase.database();
+        db.ref('site-data').on('value', (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            localStorage.setItem('site-data', JSON.stringify(data));
+            render();
+          }
+        });
+      } catch (err) {
+        console.log('Firebase error:', err);
+      }
+    }
+
+    // Load data from server API
+    async function loadFromServer() {
+      try {
+        const response = await fetch('/api/site-data');
+        if (response.ok) {
+          const data = await response.json();
+          localStorage.setItem('site-data', JSON.stringify(data));
+          render();
+        }
+      } catch (err) {
+        console.log('Server API error:', err);
+      }
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function getLinkIcon(iconName) {
+      const icons = {
+        'twitter': 'fab fa-twitter',
+        'instagram': 'fab fa-instagram',
+        'youtube': 'fab fa-youtube',
+        'facebook': 'fab fa-facebook',
+        'linkedin': 'fab fa-linkedin',
+        'github': 'fab fa-github',
+        'tiktok': 'fab fa-tiktok',
+        'discord': 'fab fa-discord',
+        'twitch': 'fab fa-twitch',
+        'snapchat': 'fab fa-snapchat',
+        'pinterest': 'fab fa-pinterest',
+        'spotify': 'fab fa-spotify',
+        'email': 'fas fa-envelope',
+        'website': 'fas fa-globe',
+        'phone': 'fas fa-phone',
+        'default': 'fas fa-link'
+      };
+      return icons[iconName?.toLowerCase()] || icons['default'];
+    }
+
+    function render() {
+      const data = getStorage('site-data', {
+        title: 'Welcome to KitKat Universe',
+        tagline: 'Discover amazing experiences and connections',
+        about: 'Welcome to KitKat Universe. Connect with us through the links above!',
+        contact: 'Get in touch with us through the links above or reach out directly!',
+        links: [],
+        colors: { primary: '#a855f7', secondary: '#f0f0f0' },
+        font: 'Inter'
+      });
+
+      // Apply custom font
+      if (data.font) {
+        const fontMap = {
+          'Inter': '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
+          'Poppins': '"Poppins", sans-serif',
+          'Georgia': '"Georgia", serif',
+          'monospace': 'monospace'
+        };
+        document.body.style.fontFamily = fontMap[data.font] || fontMap['Inter'];
+      }
+
+      // Apply custom primary and secondary colors
+      if (data.colors?.primary || data.colors?.secondary) {
+        const style = document.createElement('style');
+        const primaryColor = data.colors.primary || '#a855f7';
+        const secondaryColor = data.colors.secondary || '#f0f0f0';
+        
+        style.textContent = `
+          body { background: ${primaryColor}; }
+          .link-btn, .link-pill { background: linear-gradient(135deg, ${primaryColor} 0%, ${primaryColor}dd 100%); }
+          .social-btn { color: ${primaryColor}; background: ${secondaryColor}; }
+          .social-btn:hover { background: ${primaryColor}; }
+          header h1 { color: white; }
+          header { background: white; }
+          .hero { background: linear-gradient(135deg, ${primaryColor} 0%, ${primaryColor}dd 100%); }
+          .section { background: ${secondaryColor}; }
+        `;
+        document.head.appendChild(style);
+      }
+
+      // Update title and tagline (only if elements exist)
+      if (el('title')) el('title').textContent = data.title || 'Welcome to KitKat Universe';
+      if (el('tagline')) el('tagline').textContent = data.tagline || 'Discover amazing experiences and connections';
+      if (el('about')) el('about').textContent = data.about || 'Welcome to KitKat Universe. Connect with us through the links above!';
+      if (el('contact')) el('contact').textContent = data.contact || 'Get in touch with us through the links above or reach out directly!';
+
+      // Render links
+      const linksBox = el('links');
+      if (!data.links || data.links.length === 0) {
+        linksBox.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><i class="fas fa-link"></i><p>No links added yet.</p></div>';
+      } else {
+        linksBox.innerHTML = data.links.map(link => `
+          <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="link-pill">
+            <span class="pill-icon"><i class="${getLinkIcon(link.icon)}"></i></span>
+            ${escapeHtml(link.name)}
+          </a>
+        `).join('');
+      }
+
+      // Render social links
+      const socialBox = el('social');
+      if (!data.links || data.links.length === 0) {
+        socialBox.innerHTML = '<div class="empty-state"><i class="fas fa-share-alt"></i><p>No social links added yet.</p></div>';
+      } else {
+        socialBox.innerHTML = data.links.map(link => `
+          <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="social-btn" title="${escapeHtml(link.name)}">
+            <i class="${getLinkIcon(link.icon)}"></i>
+          </a>
+        `).join('');
+      }
+    }
+
+    // Initial render - fetch from API and subscribe to updates (SSE) with polling fallback
+    (async function init() {
+      // Initial load
+      const data = await fetchSiteData();
+      localStorage.setItem('site-data', JSON.stringify(data));
+      render();
+      
+      // Subscribe to server-sent events for live updates
+      function startFallbackPolling() {
+        setInterval(async () => {
+          const newData = await fetchSiteData();
+          const oldData = getStorage('site-data', {});
+          if (JSON.stringify(newData) !== JSON.stringify(oldData)) {
+            localStorage.setItem('site-data', JSON.stringify(newData));
+            render();
+          }
+        }, 5000); // fallback: poll every 5s
+      }
+
+      if (window.EventSource) {
+        try {
+          const es = new EventSource('/events');
+          es.onmessage = async () => {
+            const newData = await fetchSiteData();
+            const oldData = getStorage('site-data', {});
+            if (JSON.stringify(newData) !== JSON.stringify(oldData)) {
+              localStorage.setItem('site-data', JSON.stringify(newData));
+              render();
+            }
+          };
+          es.onerror = (err) => {
+            console.log('EventSource error (index):', err);
+            es.close();
+            startFallbackPolling();
+          };
+        } catch (err) {
+          console.log('SSE not available (index):', err);
+          startFallbackPolling();
+        }
+      } else {
+        startFallbackPolling();
+      }
+    })();
+    
+    // Listen for storage changes from other tabs
+    window.addEventListener('storage', render);
+  </script>
+</body>
+</html>

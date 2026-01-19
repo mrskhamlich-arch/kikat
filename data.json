@@ -1,0 +1,31 @@
+{
+  "problems": [
+    {
+      "id": "1768864903943",
+      "name": "youtube",
+      "url": "https://www.youtube.com/@KitKatUvU",
+      "icon": "hui huere"
+    }
+  ],
+  "settings": {
+    "title": "",
+    "tagline": "",
+    "about": "",
+    "contact": "",
+    "links": [
+      {
+        "id": "1768864903943",
+        "name": "youtube",
+        "url": "https://www.youtube.com/@KitKatUvU",
+        "icon": "hui huere"
+      }
+    ],
+    "colors": {
+      "primary": "#a855f7",
+      "secondary": "#f0f0f0"
+    },
+    "font": "Inter",
+    "adminName": "KitKat Universe",
+    "adminUsername": "tobi"
+  }
+}

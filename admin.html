@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KitKat Universe - Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: #f5f3ff;
+      color: #1e1e2e;
+      overflow-x: hidden;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+      padding: 24px;
+      color: white;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(168, 85, 247, 0.2);
+    }
+
+    .sidebar-header {
+      margin-bottom: 32px;
+    }
+
+    .sidebar-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .user-profile {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-top: 12px;
+      width: 100%;
+      transition: 0.2s;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Main content */
+    .main {
+      margin-left: 280px;
+      flex: 1;
+      padding: 24px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      background: white;
+      padding: 20px 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #a855f7;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-primary {
+      background: #a855f7;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      background: #9333ea;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #1e1e2e;
+      border: 1px solid #e0e0e0;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: #f9f9f9;
+    }
+
+    .notification {
+      background: linear-gradient(135deg, #e0d9ff 0%, #f3e8ff 100%);
+      border-left: 4px solid #a855f7;
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #6b21a8;
+      font-size: 14px;
+    }
+
+    .notification i {
+      font-size: 18px;
+    }
+
+    .notification a {
+      color: #a855f7;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .notification a:hover {
+      text-decoration: underline;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 24px;
+      background: white;
+      border-radius: 12px;
+      padding: 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 16px 20px;
+      background: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      color: #999;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .tab:hover {
+      color: #a855f7;
+    }
+
+    .tab.active {
+      color: #a855f7;
+      background: #f9f7ff;
+      border-bottom: 3px solid #a855f7;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .content-section {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1e1e2e;
+    }
+
+    .links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+
+    .link-item:hover {
+      background: #f0f0f0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .link-drag {
+      color: #ccc;
+      cursor: grab;
+      font-size: 16px;
+    }
+
+    .link-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .link-info {
+      flex: 1;
+    }
+
+    .link-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: #1e1e2e;
+      margin-bottom: 4px;
+    }
+
+    .link-url {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .link-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .btn-edit {
+      background: #e0d9ff;
+      color: #a855f7;
+    }
+
+    .btn-edit:hover {
+      background: #d4c5f9;
+    }
+
+    .btn-delete {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .btn-delete:hover {
+      background: #fecaca;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #1e1e2e;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #a855f7;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .btn-form {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .btn-form-submit {
+      background: #a855f7;
+      color: white;
+    }
+
+    .btn-form-submit:hover {
+      background: #9333ea;
+    }
+
+    .btn-form-cancel {
+      background: #f0f0f0;
+      color: #1e1e2e;
+    }
+
+    .btn-form-cancel:hover {
+      background: #e0e0e0;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+    }
+
+    .login-box {
+      background: white;
+      padding: 48px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(168, 85, 247, 0.3);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-box h1 {
+      text-align: center;
+      margin-bottom: 8px;
+      color: #a855f7;
+    }
+
+    .login-box p {
+      text-align: center;
+      color: #999;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+
+    .login-error {
+      color: #dc2626;
+      margin-bottom: 16px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 16px;
+      }
+
+      .main {
+        margin-left: 0;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .form-row,
+      .settings-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        overflow-x: auto;
+      }
+
+      .tab {
+        min-width: 150px;
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="login-screen" class="login-container">
+    <div class="login-box">
+      <h1>KitKat Universe</h1>
+      <p>Admin Control Panel</p>
+      <div class="login-error" id="login-error"></div>
+      <div class="form-group">
+        <input type="password" id="password" class="form-input" placeholder="Enter admin password">
+      </div>
+      <button class="btn-primary" onclick="handleLogin()" style="width: 100%;">Sign In</button>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app" class="hidden">
+    <div class="container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-title">KitKat Universe</div>
+          <div class="sidebar-subtitle">Admin Control Panel</div>
+        </div>
+
+        <div class="user-profile">
+          <div class="user-info">
+            <div class="user-avatar">A</div>
+            <div class="user-name" id="display-username">Ahmed Khamlich</div>
+          </div>
+          <button class="logout-btn" onclick="handleLogout()">Sign Out</button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main">
+        <div class="header">
+          <div class="header-left">
+            <i class="fas fa-rocket" style="font-size: 24px; color: #a855f7;"></i>
+            <div class="header-title">Dashboard</div>
+          </div>
+          <div class="header-buttons">
+            <button class="btn-secondary" onclick="previewSite()">
+              <i class="fas fa-eye"></i> Preview Viewer Site
+            </button>
+          </div>
+        </div>
+
+        <div class="notification">
+          <i class="fas fa-info-circle"></i>
+          <span>Your viewer site is live at <a href="index.html" target="_blank">the Home page</a>. Any changes you make here will instantly appear for all visitors!</span>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab('links')">
+            <i class="fas fa-link"></i> Links
+          </button>
+          <button class="tab" onclick="switchTab('settings')">
+            <i class="fas fa-cog"></i> Settings
+          </button>
+        </div>
+
+        <!-- Links Tab -->
+        <div id="links" class="tab-content active">
+          <div class="content-section">
+            <div class="section-header">
+              <div class="section-title">Manage Links</div>
+              <button class="btn-primary" onclick="openAddLinkForm()">
+                <i class="fas fa-plus"></i> Add New Link
+              </button>
+            </div>
+
+            <div id="links-list" class="links-list"></div>
+          </div>
+
+          <!-- Add/Edit Link Form -->
+          <div id="link-form-container" class="content-section hidden">
+            <div class="section-title" style="margin-bottom: 20px;">Add New Link</div>
+            <div class="form-group">
+              <label class="form-label">Link Name</label>
+              <input type="text" id="link-name" class="form-input" placeholder="e.g., Twitter">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Link URL</label>
+              <input type="text" id="link-url" class="form-input" placeholder="https://twitter.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Icon</label>
+              <input type="text" id="link-icon" class="form-input" placeholder="e.g., twitter (Font Awesome icon name)">
+            </div>
+            <div class="form-actions">
+              <button class="btn-form btn-form-submit" onclick="saveLink()">Save Link</button>
+              <button class="btn-form btn-form-cancel" onclick="closeAddLinkForm()">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings" class="tab-content">
+          <div class="content-section">
+            <div class="section-title" style="margin-bottom: 20px;">Site Settings</div>
+            
+            <div class="form-group">
+              <label class="form-label">Admin Panel Name</label>
+              <input type="text" id="admin-name" class="form-input" placeholder="e.g., KitKat Universe">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Username</label>
+              <input type="text" id="admin-username" class="form-input" placeholder="e.g., Ahmed Khamlich">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Site Title</label>
+              <input type="text" id="site-title" class="form-input" placeholder="Your Site Title">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Tagline</label>
+              <input type="text" id="site-tagline" class="form-input" placeholder="Your tagline here">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">About</label>
+              <textarea id="site-about" class="form-input" placeholder="About your site..." style="height: 100px; resize: vertical;"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Contact Us</label>
+              <textarea id="site-contact" class="form-input" placeholder="Contact information, email, phone, address, etc..." style="height: 100px; resize: vertical;"></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Primary Color</label>
+                <div style="display: flex; gap: 12px;">
+                  <input type="color" id="color-primary" style="width: 60px; height: 44px; border-radius: 8px; border: none; cursor: pointer;">
+                  <input type="text" id="color-primary-text" class="form-input" placeholder="#a855f7">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Secondary Color</label>
+                <div style="display: flex; gap: 12px;">
+                  <input type="color" id="color-secondary" style="width: 60px; height: 44px; border-radius: 8px; border: none; cursor: pointer;">
+                  <input type="text" id="color-secondary-text" class="form-input" placeholder="#f0f0f0">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Font Family</label>
+                <select id="font-family" class="form-input">
+                  <option value="Inter">Inter (Default)</option>
+                  <option value="Poppins">Poppins (Bold)</option>
+                  <option value="Georgia">Georgia (Serif)</option>
+                  <option value="monospace">Monospace</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="btn-primary" style="width: 100%; margin-top: 20px;" onclick="saveSettings()">
+              <i class="fas fa-save"></i> Save Settings
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN_PASSWORD = 'kitkat09';
+    let isLoggedIn = false;
+    let editingLinkId = null;
+    
+    // API endpoint - change this when deployed
+    const API_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
+      ? 'http://localhost:3000'
+      : 'https://your-deployed-server.com'; // Update this with your server URL
+    
+    // Helper to make API calls
+    async function apiCall(endpoint, method = 'GET', body = null) {
+      const options = {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': ADMIN_PASSWORD
+        }
+      };
+      
+      if (body) {
+        options.body = JSON.stringify(body);
+      }
+      
+      const response = await fetch(`${API_URL}${endpoint}`, options);
+      if (!response.ok) {
+        throw new Error(`API error! status: ${response.status}`);
+      }
+      return await response.json();
+    }
+
+    function el(id) {
+      return document.getElementById(id);
+    }
+
+    function getStorage(key, defaultVal = {}) {
+      try {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : defaultVal;
+      } catch (e) {
+        return defaultVal;
+      }
+    }
+
+    function setStorage(key, val) {
+      localStorage.setItem(key, JSON.stringify(val));
+      // Also save to Firebase for real-time sync (optional)
+      try {
+        if (typeof firebase !== 'undefined' && firebase.database) {
+          const db = firebase.database();
+          db.ref(key).set(val).catch(err => console.log('Firebase error:', err));
+        }
+      } catch (err) {
+        console.log('Firebase not available:', err);
+      }
+    }
+
+    // Load data from server
+    async function loadFromServer() {
+      try {
+        const data = await apiCall('/api/site-data');
+        setStorage('site-data', data);
+        renderLinks();
+        loadSettings();
+      } catch (err) {
+        console.log('Server load error, using local cache:', err);
+        // Fallback to localStorage
+        renderLinks();
+        loadSettings();
+      }
+    }
+    
+    // Start Server-Sent Events subscription for live updates with polling fallback
+    function startPolling() {
+      function startPollingFallback() {
+        setInterval(async () => {
+          try {
+            const data = await apiCall('/api/site-data');
+            setStorage('site-data', data);
+            if (isLoggedIn) renderLinks();
+          } catch (err) {
+            console.log('Polling fallback error:', err);
+          }
+        }, 5000);
+      }
+
+      if (window.EventSource) {
+        try {
+          const es = new EventSource('/events');
+          es.onmessage = async () => {
+            try {
+              const data = await apiCall('/api/site-data');
+              setStorage('site-data', data);
+              if (isLoggedIn) renderLinks();
+            } catch (err) {
+              console.log('SSE fetch error (admin):', err);
+            }
+          };
+          es.onerror = (err) => {
+            console.log('EventSource error (admin):', err);
+            es.close();
+            startPollingFallback();
+          };
+        } catch (err) {
+          console.log('SSE not available (admin):', err);
+          startPollingFallback();
+        }
+      } else {
+        startPollingFallback();
+      }
+    }
+
+    function handleLogin() {
+      const pw = el('password').value;
+      if (pw === ADMIN_PASSWORD) {
+        isLoggedIn = true;
+        el('login-screen').classList.add('hidden');
+        el('app').classList.remove('hidden');
+        el('login-error').textContent = '';
+        loadFromServer();
+        startPolling();
+      } else {
+        el('login-error').textContent = 'Incorrect password';
+      }
+    }
+
+    function handleLogout() {
+      isLoggedIn = false;
+      el('app').classList.add('hidden');
+      el('login-screen').classList.remove('hidden');
+      el('password').value = '';
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      
+      event.target.closest('.tab').classList.add('active');
+      el(tab).classList.add('active');
+    }
+
+    function previewSite() {
+      window.open('index.html', '_blank');
+    }
+
+    function getLinkIcon(iconName) {
+      const icons = {
+        'twitter': 'fab fa-twitter',
+        'instagram': 'fab fa-instagram',
+        'youtube': 'fab fa-youtube',
+        'facebook': 'fab fa-facebook',
+        'linkedin': 'fab fa-linkedin',
+        'github': 'fab fa-github',
+        'tiktok': 'fab fa-tiktok',
+        'discord': 'fab fa-discord',
+        'twitch': 'fab fa-twitch',
+        'snapchat': 'fab fa-snapchat',
+        'pinterest': 'fab fa-pinterest',
+        'spotify': 'fab fa-spotify',
+        'email': 'fas fa-envelope',
+        'website': 'fas fa-globe',
+        'phone': 'fas fa-phone',
+        'default': 'fas fa-link'
+      };
+      return icons[iconName?.toLowerCase()] || icons['default'];
+    }
+
+    function renderLinks() {
+      const data = getStorage('site-data', { links: [] });
+      const linksList = el('links-list');
+      
+      // Convert object to array if it's from Firebase
+      let links = Array.isArray(data.links) ? data.links : Object.values(data.links || {});
+
+      if (!links || links.length === 0) {
+        linksList.innerHTML = '<div class="empty-state"><i class="fas fa-link"></i><p>No links yet. Add your first link!</p></div>';
+        return;
+      }
+
+      linksList.innerHTML = links.map(link => `
+        <div class="link-item">
+          <div class="link-drag"><i class="fas fa-ellipsis-v"></i></div>
+          <div class="link-icon">
+            <i class="${getLinkIcon(link.icon)}"></i>
+          </div>
+          <div class="link-info">
+            <div class="link-name">${escapeHtml(link.name)}</div>
+            <div class="link-url">${escapeHtml(link.url)}</div>
+          </div>
+          <div class="link-actions">
+            <button class="btn-icon btn-edit" onclick="editLink('${link.id}')">
+              <i class="fas fa-pen"></i>
+            </button>
+            <button class="btn-icon btn-delete" onclick="deleteLink('${link.id}')">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openAddLinkForm() {
+      editingLinkId = null;
+      el('link-name').value = '';
+      el('link-url').value = '';
+      el('link-icon').value = '';
+      el('link-form-container').classList.remove('hidden');
+      el('link-form-container').querySelector('.section-title').textContent = 'Add New Link';
+      el('link-name').focus();
+    }
+
+    function closeAddLinkForm() {
+      el('link-form-container').classList.add('hidden');
+      editingLinkId = null;
+    }
+
+    function editLink(id) {
+      const data = getStorage('site-data', { links: [] });
+      // Convert object to array if it's from Firebase
+      let links = Array.isArray(data.links) ? data.links : Object.values(data.links || {});
+      const link = links.find(l => l.id === id || l.id === String(id));
+      if (link) {
+        editingLinkId = link.id;
+        el('link-name').value = link.name;
+        el('link-url').value = link.url;
+        el('link-icon').value = link.icon;
+        el('link-form-container').classList.remove('hidden');
+        el('link-form-container').querySelector('.section-title').textContent = 'Edit Link';
+        el('link-name').focus();
+      }
+    }
+
+    async function saveLink() {
+      const name = el('link-name').value.trim();
+      const url = el('link-url').value.trim();
+      const icon = el('link-icon').value.trim();
+
+      if (!name || !url) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      try {
+        // Get current data
+        const data = getStorage('site-data', { title: '', tagline: '', about: '', links: [], colors: { primary: '#a855f7', secondary: '#f0f0f0' }, font: 'Inter' });
+        
+        // Ensure links is always an array
+        if (!Array.isArray(data.links)) {
+          data.links = [];
+        }
+        
+        if (editingLinkId) {
+          // Update existing link
+          const linkIndex = data.links.findIndex(l => String(l.id) === String(editingLinkId));
+          if (linkIndex !== -1) {
+            data.links[linkIndex] = {
+              ...data.links[linkIndex],
+              name,
+              url,
+              icon
+            };
+          }
+        } else {
+          // Create new link
+          data.links.push({
+            id: Date.now().toString(),
+            name,
+            url,
+            icon
+          });
+        }
+
+        // Save to server
+        await apiCall('/api/site-data', 'POST', data);
+        
+        alert('Link saved successfully!');
+        renderLinks();
+        closeAddLinkForm();
+      } catch (error) {
+        console.error('Error saving link:', error);
+        alert('Failed to save link: ' + error.message);
+      }
+    }
+
+    async function deleteLink(id) {
+      if (confirm('Are you sure you want to delete this link?')) {
+        try {
+          // Get current data
+          let data = getStorage('site-data', { links: [] });
+          
+          // Ensure links is an array
+          if (!Array.isArray(data.links)) {
+            data.links = [];
+          }
+          
+          // Remove the link
+          const idStr = String(id);
+          data.links = data.links.filter(l => String(l.id) !== idStr);
+          
+          // Save to server
+          await apiCall('/api/site-data', 'POST', data);
+
+          alert('Link deleted successfully!');
+          renderLinks();
+        } catch (error) {
+          console.error('Error deleting link:', error);
+          alert('Failed to delete link: ' + error.message);
+        }
+      }
+    }
+
+    async function autoSaveSettings() {
+      const adminName = el('admin-name').value.trim() || 'KitKat Universe';
+      const adminUsername = el('admin-username').value.trim() || 'Ahmed Khamlich';
+      const title = el('site-title').value.trim();
+      const tagline = el('site-tagline').value.trim();
+      const about = el('site-about').value.trim();
+      const contact = el('site-contact').value.trim();
+      const primaryColor = el('color-primary').value;
+      const secondaryColor = el('color-secondary').value;
+      const fontFamily = el('font-family').value;
+
+      const settingsData = {
+        adminName,
+        adminUsername,
+        title,
+        tagline,
+        about,
+        contact,
+        colors: { primary: primaryColor, secondary: secondaryColor },
+        font: fontFamily
+      };
+
+      try {
+        // Get current data
+        let data = getStorage('site-data', { links: [] });
+        Object.assign(data, settingsData);
+
+        // Save to server
+        await apiCall('/api/site-data', 'POST', data);
+        
+        // Update sidebar title and username immediately
+        document.querySelector('.sidebar-title').textContent = adminName;
+        document.getElementById('display-username').textContent = adminUsername;
+      } catch (error) {
+        console.error('Error saving settings:', error);
+        // Still save to localStorage as fallback
+        let data = getStorage('site-data', { links: [] });
+        Object.assign(data, settingsData);
+        setStorage('site-data', data);
+      }
+    }
+
+    function saveSettings() {
+      autoSaveSettings();
+      alert('Settings saved successfully!');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function loadSettings() {
+      const data = getStorage('site-data', { title: '', tagline: '', about: '', contact: '', colors: { primary: '#a855f7', secondary: '#f0f0f0' }, font: 'Inter', adminName: 'KitKat Universe', adminUsername: 'Ahmed Khamlich' });
+      el('admin-name').value = data.adminName || 'KitKat Universe';
+      el('admin-username').value = data.adminUsername || 'Ahmed Khamlich';
+      el('site-title').value = data.title || '';
+      el('site-tagline').value = data.tagline || '';
+      el('site-about').value = data.about || '';
+      el('site-contact').value = data.contact || '';
+      el('color-primary').value = data.colors?.primary || '#a855f7';
+      el('color-primary-text').value = data.colors?.primary || '#a855f7';
+      el('color-secondary').value = data.colors?.secondary || '#f0f0f0';
+      el('color-secondary-text').value = data.colors?.secondary || '#f0f0f0';
+      el('font-family').value = data.font || 'Inter';
+
+      // Sync color inputs
+      el('color-primary').addEventListener('input', e => {
+        el('color-primary-text').value = e.target.value;
+      });
+      el('color-primary-text').addEventListener('input', e => {
+        el('color-primary').value = e.target.value;
+      });
+      el('color-secondary').addEventListener('input', e => {
+        el('color-secondary-text').value = e.target.value;
+      });
+      el('color-secondary-text').addEventListener('input', e => {
+        el('color-secondary').value = e.target.value;
+      });
+    }
+
+    // Allow Enter key to login
+    el('password').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleLogin();
+    });
+
+    // Auto-save settings on input change
+    el('admin-name').addEventListener('input', autoSaveSettings);
+    el('admin-username').addEventListener('input', autoSaveSettings);
+    el('site-title').addEventListener('input', autoSaveSettings);
+    el('site-tagline').addEventListener('input', autoSaveSettings);
+    el('site-about').addEventListener('input', autoSaveSettings);
+    el('site-contact').addEventListener('input', autoSaveSettings);
+    el('color-primary').addEventListener('change', autoSaveSettings);
+    el('color-secondary').addEventListener('change', autoSaveSettings);
+    el('font-family').addEventListener('change', autoSaveSettings);
+  </script>
+</body>
+</html>
