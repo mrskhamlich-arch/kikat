@@ -1249,13 +1249,13 @@
 
     // Reset colors to default
     function resetColors() {
-      if (confirm('Reset colors to default (Primary: #7b4dff, Secondary: #ffffff)?')) {
-        el('color-primary').value = '#7b4dff';
-        el('color-primary-text').value = '#7b4dff';
-        el('color-secondary').value = '#ffffff';
-        el('color-secondary-text').value = '#ffffff';
+      if (confirm('Reset colors to original (Primary: #a855f7, Secondary: #f0f0f0)?')) {
+        el('color-primary').value = '#a855f7';
+        el('color-primary-text').value = '#a855f7';
+        el('color-secondary').value = '#f0f0f0';
+        el('color-secondary-text').value = '#f0f0f0';
         autoSaveSettings();
-        alert('Colors reset to default!');
+        alert('Colors reset to original!');
       }
     }
 
