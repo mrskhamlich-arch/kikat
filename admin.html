@@ -775,17 +775,21 @@
                 <label class="form-label">Primary Color</label>
                 <div style="display: flex; gap: 12px;">
                   <input type="color" id="color-primary" style="width: 60px; height: 44px; border-radius: 8px; border: none; cursor: pointer;">
-                  <input type="text" id="color-primary-text" class="form-input" placeholder="#a855f7">
+                  <input type="text" id="color-primary-text" class="form-input" placeholder="#7b4dff">
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Secondary Color</label>
                 <div style="display: flex; gap: 12px;">
                   <input type="color" id="color-secondary" style="width: 60px; height: 44px; border-radius: 8px; border: none; cursor: pointer;">
-                  <input type="text" id="color-secondary-text" class="form-input" placeholder="#f0f0f0">
+                  <input type="text" id="color-secondary-text" class="form-input" placeholder="#ffffff">
                 </div>
               </div>
             </div>
+
+            <button class="btn-form" style="width: 100%; background: #999; color: white; margin-bottom: 12px;" onclick="resetColors()">
+              <i class="fas fa-redo"></i> Reset Colors to Default
+            </button>
 
             <div class="form-row">
               <div class="form-group">
@@ -1241,6 +1245,18 @@
       el('icon-preview').style.display = 'block';
       el('icon-preview-icon').className = `fab fa-${selectedIconName}`;
       closeIconPicker();
+    }
+
+    // Reset colors to default
+    function resetColors() {
+      if (confirm('Reset colors to default (Primary: #7b4dff, Secondary: #ffffff)?')) {
+        el('color-primary').value = '#7b4dff';
+        el('color-primary-text').value = '#7b4dff';
+        el('color-secondary').value = '#ffffff';
+        el('color-secondary-text').value = '#ffffff';
+        autoSaveSettings();
+        alert('Colors reset to default!');
+      }
     }
 
     // Load new settings fields
