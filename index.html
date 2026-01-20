@@ -192,18 +192,19 @@
       // Apply custom primary and secondary colors
       if (data.colors?.primary || data.colors?.secondary) {
         const style = document.createElement('style');
-        const primaryColor = data.colors.primary || '#a855f7';
-        const secondaryColor = data.colors.secondary || '#f0f0f0';
+        const primaryColor = data.colors.primary || '#7b4dff';
+        const secondaryColor = data.colors.secondary || '#ffffff';
         
         style.textContent = `
-          body { background: ${primaryColor}; }
-          .link-btn, .link-pill { background: linear-gradient(135deg, ${primaryColor} 0%, ${primaryColor}dd 100%); }
-          .social-btn { color: ${primaryColor}; background: ${secondaryColor}; }
-          .social-btn:hover { background: ${primaryColor}; }
-          header h1 { color: white; }
-          header { background: white; }
-          .hero { background: linear-gradient(135deg, ${primaryColor} 0%, ${primaryColor}dd 100%); }
-          .section { background: ${secondaryColor}; }
+          body { background: ${primaryColor} !important; }
+          .page { background: ${primaryColor} !important; }
+          .card { background: ${secondaryColor} !important; }
+          .status-card { background: ${secondaryColor} !important; }
+          .nav-card { background: ${secondaryColor} !important; }
+          #contact-section { background: ${secondaryColor} !important; }
+          .link-pill { background: linear-gradient(135deg, ${primaryColor} 0%, ${primaryColor}dd 100%); }
+          .social-btn { color: ${primaryColor}; }
+          .social-btn:hover { background: ${primaryColor}; color: white; }
         `;
         document.head.appendChild(style);
       }
