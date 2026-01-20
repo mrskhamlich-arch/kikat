@@ -481,6 +481,74 @@
       text-align: center;
     }
 
+    /* Icon Picker Modal */
+    .icon-picker-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .icon-picker-modal.active {
+      display: flex;
+    }
+
+    .icon-picker-content {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .icon-picker-content h3 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .icon-btn {
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-size: 24px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-btn:hover {
+      border-color: #a855f7;
+      background: #f9f7ff;
+      transform: scale(1.1);
+    }
+
+    .icon-btn.active {
+      border-color: #a855f7;
+      background: #a855f7;
+      color: white;
+    }
+
     @media (max-width: 768px) {
       .sidebar {
         width: 100%;
@@ -528,6 +596,18 @@
         <input type="password" id="password" class="form-input" placeholder="Enter admin password">
       </div>
       <button class="btn-primary" onclick="handleLogin()" style="width: 100%;">Sign In</button>
+    </div>
+  </div>
+
+  <!-- Icon Picker Modal -->
+  <div id="icon-picker-modal" class="icon-picker-modal">
+    <div class="icon-picker-content">
+      <h3>Select an Icon</h3>
+      <div class="icon-grid" id="icon-grid"></div>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn-primary" onclick="confirmIconSelection()" style="flex: 1;">Confirm</button>
+        <button class="btn-form btn-form-cancel" onclick="closeIconPicker()" style="flex: 1;">Cancel</button>
+      </div>
     </div>
   </div>
 
@@ -605,7 +685,15 @@
             </div>
             <div class="form-group">
               <label class="form-label">Icon</label>
-              <input type="text" id="link-icon" class="form-input" placeholder="e.g., twitter (Font Awesome icon name)">
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <input type="text" id="link-icon" class="form-input" placeholder="e.g., twitter" style="flex: 1;">
+                <button type="button" class="btn-primary" onclick="openIconPicker()" style="padding: 10px 16px; white-space: nowrap;">
+                  <i class="fas fa-icons"></i> Pick Icon
+                </button>
+              </div>
+              <div id="icon-preview" style="margin-top: 12px; font-size: 48px; text-align: center; color: #a855f7; display: none;">
+                <i id="icon-preview-icon"></i>
+              </div>
             </div>
             <div class="form-actions">
               <button class="btn-form btn-form-submit" onclick="saveLink()">Save Link</button>
@@ -642,6 +730,29 @@
             <div class="form-group">
               <label class="form-label">About</label>
               <textarea id="site-about" class="form-input" placeholder="About your site..." style="height: 100px; resize: vertical;"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Profile Picture (URL)</label>
+              <input type="text" id="profile-image" class="form-input" placeholder="https://example.com/image.jpg">
+              <small style="color: #999; margin-top: 4px; display: block;">Upload image to a service like imgur.com and paste the URL here</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Banner Image (URL)</label>
+              <input type="text" id="banner-image" class="form-input" placeholder="https://example.com/banner.jpg">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Background Music (URL)</label>
+              <input type="text" id="background-music" class="form-input" placeholder="https://example.com/music.mp3">
+              <small style="color: #999; margin-top: 4px; display: block;">Auto-plays when visitor arrives</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Side Stickers (Emoji or URLs, comma separated)</label>
+              <input type="text" id="side-stickers" class="form-input" placeholder="🎨,😊,⭐ or https://example.com/sticker1.png,https://example.com/sticker2.png">
+              <small style="color: #999; margin-top: 4px; display: block;">Add decorative stickers to the sides of the page</small>
             </div>
 
             <div class="form-group">
@@ -1080,6 +1191,133 @@
       });
     }
 
+    // Icon Picker Functions
+    const AVAILABLE_ICONS = [
+      'twitter', 'instagram', 'youtube', 'facebook', 'linkedin', 'github', 'tiktok', 'discord', 'twitch', 'snapchat', 'pinterest', 'spotify', 'email', 'website', 'phone', 'globe', 'camera', 'heart', 'star', 'music', 'video', 'image', 'link', 'share', 'user', 'users', 'briefcase', 'code', 'pencil', 'trash', 'check', 'times', 'plus', 'minus', 'setting', 'clock', 'location', 'map', 'calendar', 'mail', 'chat', 'comment', 'quote', 'lightbulb', 'rocket', 'bomb', 'fire', 'smile', 'laugh', 'heart-o', 'star-o', 'bookmark', 'flag', 'cup', 'crown', 'diamond', 'gem', 'key', 'lock', 'unlock'
+    ];
+
+    let selectedIconName = '';
+
+    function openIconPicker() {
+      selectedIconName = el('link-icon').value;
+      renderIconGrid();
+      el('icon-picker-modal').classList.add('active');
+    }
+
+    function closeIconPicker() {
+      el('icon-picker-modal').classList.remove('active');
+    }
+
+    function renderIconGrid() {
+      const grid = el('icon-grid');
+      grid.innerHTML = AVAILABLE_ICONS.map(iconName => `
+        <button type="button" class="icon-btn ${selectedIconName === iconName ? 'active' : ''}" 
+                onclick="selectIcon('${iconName}')" title="${iconName}">
+          <i class="fab fa-${iconName}"></i>
+        </button>
+      `).join('');
+    }
+
+    function selectIcon(iconName) {
+      selectedIconName = iconName;
+      renderIconGrid();
+      // Update preview
+      el('icon-preview').style.display = 'block';
+      el('icon-preview-icon').className = `fab fa-${iconName}`;
+    }
+
+    function confirmIconSelection() {
+      el('link-icon').value = selectedIconName;
+      el('icon-preview').style.display = 'block';
+      el('icon-preview-icon').className = `fab fa-${selectedIconName}`;
+      closeIconPicker();
+    }
+
+    // Load new settings fields
+    function loadSettings() {
+      const data = getStorage('site-data', { title: '', tagline: '', about: '', contact: '', colors: { primary: '#a855f7', secondary: '#f0f0f0' }, font: 'Inter', adminName: 'KitKat Universe', adminUsername: 'Ahmed Khamlich' });
+      el('admin-name').value = data.adminName || 'KitKat Universe';
+      el('admin-username').value = data.adminUsername || 'Ahmed Khamlich';
+      el('site-title').value = data.title || '';
+      el('site-tagline').value = data.tagline || '';
+      el('site-about').value = data.about || '';
+      el('site-contact').value = data.contact || '';
+      el('profile-image').value = data.profileImage || '';
+      el('banner-image').value = data.bannerImage || '';
+      el('background-music').value = data.backgroundMusic || '';
+      el('side-stickers').value = data.sideStickers || '';
+      el('color-primary').value = data.colors?.primary || '#a855f7';
+      el('color-primary-text').value = data.colors?.primary || '#a855f7';
+      el('color-secondary').value = data.colors?.secondary || '#f0f0f0';
+      el('color-secondary-text').value = data.colors?.secondary || '#f0f0f0';
+      el('font-family').value = data.font || 'Inter';
+
+      // Sync color inputs
+      el('color-primary').addEventListener('input', e => {
+        el('color-primary-text').value = e.target.value;
+      });
+      el('color-primary-text').addEventListener('input', e => {
+        el('color-primary').value = e.target.value;
+      });
+      el('color-secondary').addEventListener('input', e => {
+        el('color-secondary-text').value = e.target.value;
+      });
+      el('color-secondary-text').addEventListener('input', e => {
+        el('color-secondary').value = e.target.value;
+      });
+    }
+
+    // Updated autoSaveSettings to include new fields
+    async function autoSaveSettings() {
+      const adminName = el('admin-name').value.trim() || 'KitKat Universe';
+      const adminUsername = el('admin-username').value.trim() || 'Ahmed Khamlich';
+      const title = el('site-title').value.trim();
+      const tagline = el('site-tagline').value.trim();
+      const about = el('site-about').value.trim();
+      const contact = el('site-contact').value.trim();
+      const primaryColor = el('color-primary').value;
+      const secondaryColor = el('color-secondary').value;
+      const fontFamily = el('font-family').value;
+      const profileImage = el('profile-image').value.trim();
+      const bannerImage = el('banner-image').value.trim();
+      const backgroundMusic = el('background-music').value.trim();
+      const sideStickers = el('side-stickers').value.trim();
+
+      const settingsData = {
+        adminName,
+        adminUsername,
+        title,
+        tagline,
+        about,
+        contact,
+        profileImage,
+        bannerImage,
+        backgroundMusic,
+        sideStickers,
+        colors: { primary: primaryColor, secondary: secondaryColor },
+        font: fontFamily
+      };
+
+      try {
+        // Get current data
+        let data = getStorage('site-data', { links: [] });
+        Object.assign(data, settingsData);
+
+        // Save to server
+        await apiCall('/api/site-data', 'POST', data);
+        
+        // Update sidebar title and username immediately
+        document.querySelector('.sidebar-title').textContent = adminName;
+        document.getElementById('display-username').textContent = adminUsername;
+      } catch (error) {
+        console.error('Error saving settings:', error);
+        // Still save to localStorage as fallback
+        let data = getStorage('site-data', { links: [] });
+        Object.assign(data, settingsData);
+        setStorage('site-data', data);
+      }
+    }
+
     // Allow Enter key to login
     el('password').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') handleLogin();
@@ -1092,6 +1330,10 @@
     el('site-tagline').addEventListener('input', autoSaveSettings);
     el('site-about').addEventListener('input', autoSaveSettings);
     el('site-contact').addEventListener('input', autoSaveSettings);
+    el('profile-image').addEventListener('input', autoSaveSettings);
+    el('banner-image').addEventListener('input', autoSaveSettings);
+    el('background-music').addEventListener('input', autoSaveSettings);
+    el('side-stickers').addEventListener('input', autoSaveSettings);
     el('color-primary').addEventListener('change', autoSaveSettings);
     el('color-secondary').addEventListener('change', autoSaveSettings);
     el('font-family').addEventListener('change', autoSaveSettings);
