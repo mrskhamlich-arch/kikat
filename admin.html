@@ -692,10 +692,10 @@
     let isLoggedIn = false;
     let editingLinkId = null;
     
-    // API endpoint - change this when deployed
+    // API endpoint - deployed on Render
     const API_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
       ? 'http://localhost:3000'
-      : 'https://your-deployed-server.com'; // Update this with your server URL
+      : 'https://kikat-universe.onrender.com';
     
     // Helper to make API calls
     async function apiCall(endpoint, method = 'GET', body = null) {
