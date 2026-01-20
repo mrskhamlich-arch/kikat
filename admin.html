@@ -750,6 +750,16 @@
             </div>
 
             <div class="form-group">
+              <label class="form-label">Contact Email</label>
+              <input type="email" id="contact-email" class="form-input" placeholder="contact@example.com">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Contact Phone</label>
+              <input type="tel" id="contact-phone" class="form-input" placeholder="+1 (555) 123-4567">
+            </div>
+
+            <div class="form-group">
               <label class="form-label">Side Stickers (Emoji or URLs, comma separated)</label>
               <input type="text" id="side-stickers" class="form-input" placeholder="🎨,😊,⭐ or https://example.com/sticker1.png,https://example.com/sticker2.png">
               <small style="color: #999; margin-top: 4px; display: block;">Add decorative stickers to the sides of the page</small>
@@ -1245,6 +1255,8 @@
       el('profile-image').value = data.profileImage || '';
       el('banner-image').value = data.bannerImage || '';
       el('background-music').value = data.backgroundMusic || '';
+      el('contact-email').value = data.contactEmail || '';
+      el('contact-phone').value = data.contactPhone || '';
       el('side-stickers').value = data.sideStickers || '';
       el('color-primary').value = data.colors?.primary || '#a855f7';
       el('color-primary-text').value = data.colors?.primary || '#a855f7';
@@ -1281,6 +1293,8 @@
       const profileImage = el('profile-image').value.trim();
       const bannerImage = el('banner-image').value.trim();
       const backgroundMusic = el('background-music').value.trim();
+      const contactEmail = el('contact-email').value.trim();
+      const contactPhone = el('contact-phone').value.trim();
       const sideStickers = el('side-stickers').value.trim();
 
       const settingsData = {
@@ -1293,6 +1307,8 @@
         profileImage,
         bannerImage,
         backgroundMusic,
+        contactEmail,
+        contactPhone,
         sideStickers,
         colors: { primary: primaryColor, secondary: secondaryColor },
         font: fontFamily
@@ -1333,6 +1349,8 @@
     el('profile-image').addEventListener('input', autoSaveSettings);
     el('banner-image').addEventListener('input', autoSaveSettings);
     el('background-music').addEventListener('input', autoSaveSettings);
+    el('contact-email').addEventListener('input', autoSaveSettings);
+    el('contact-phone').addEventListener('input', autoSaveSettings);
     el('side-stickers').addEventListener('input', autoSaveSettings);
     el('color-primary').addEventListener('change', autoSaveSettings);
     el('color-secondary').addEventListener('change', autoSaveSettings);
